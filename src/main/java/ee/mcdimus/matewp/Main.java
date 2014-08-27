@@ -1,23 +1,20 @@
 package ee.mcdimus.matewp;
 
-import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import javax.imageio.ImageIO;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.ParseException;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Properties;
+
 /**
- *
  * @author Dmitri Maksimov
  */
 public class Main {
@@ -37,34 +34,52 @@ public class Main {
 
   public static void main(String[] args) {
     try {
+      System.out.println("[x] Getting image URL...");
       String fullURL = getImageURL();
-      System.out.println(fullURL);
+      System.out.println("\t [-] " + fullURL);
+      System.out.println("[x] Downloading image...");
       String imageFullPath = downloadImage(fullURL);
-      System.out.println(imageFullPath);
+      System.out.println("\t [-] downloaded to " + imageFullPath);
 
       // get previous setting
-      Process getProcess = Runtime.getRuntime().exec(GSETTINGS, new String[]{GET_CMD, SCHEMA, KEY});
-      String value = "";
-      try (BufferedReader in = new BufferedReader(new InputStreamReader(getProcess.getInputStream()))) {
-        String line;
-        while ((line = in.readLine()) != null) {
-          value += line;
-        }
-      }
-      getProcess.waitFor();
 
-      System.out.println(value);
-      System.exit(0);
-// execute command 'gsettings set org.mate.background picture-filename '/home/dmitri/Pictures/mate-wp/2014-08-27.jpg''
-      Process exec = Runtime.getRuntime().exec(GSETTINGS, new String[]{SET_CMD, SCHEMA, KEY, String.format("'%s'", imageFullPath)});
-      exec.waitFor();
+      String result = execCommand(GSETTINGS, GET_CMD, SCHEMA, KEY);
+
+      Properties props = new Properties();
+      if (new File("props.properties").exists()) {
+        props.load(new FileInputStream("props.properties"));
+      }
+      props.setProperty("system.background", result);
+      props.store(new FileOutputStream("props.properties"), null);
+
+      // execute command 'gsettings set org.mate.background picture-filename '/home/dmitri/Pictures/mate-wp/2014-08-27.jpg''
+      execCommand(GSETTINGS, SET_CMD, SCHEMA, KEY, String.format("'%s'", imageFullPath));
     } catch (IOException | ParseException | InterruptedException ex) {
       System.err.println(ex.getMessage());
     }
   }
 
+  private static String execCommand(String... args) throws IOException, InterruptedException {
+    ProcessBuilder processBuilder = new ProcessBuilder(args);
+    processBuilder.redirectErrorStream(true);
+    Process process = processBuilder.start();
+    String value;
+    try (BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+      value = in.readLine();
+//        while ((line = in.readLine()) != null) {
+//          value += line + "\n";
+//        }
+    }
+    process.waitFor();
+    return value;
+  }
+
   private static String downloadImage(String fullURL) throws IOException {
-    BufferedImage image = ImageIO.read(new URL(fullURL));
+    URL url = new URL(fullURL);
+    URLConnection urlConnection = url.openConnection();
+    long contentLength = urlConnection.getContentLengthLong();
+    System.out.println("\t [-] image size: " + contentLength + " bytes");
+    BufferedImage image = ImageIO.read(url);
     File homeDir = new File(System.getenv().getOrDefault("HOME", "./"));
     File imagesDir = new File(homeDir, "Pictures/mate-wp");
     if (!imagesDir.exists()) {
@@ -72,11 +87,11 @@ public class Main {
     }
     File imageFile = new File(imagesDir, LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE) + EXTENSION);
     ImageIO.write(image, "jpg", imageFile);
-    String imageFullPath = imageFile.getAbsolutePath();
-    return imageFullPath;
+
+    return imageFile.getAbsolutePath();
   }
 
-  private static String getImageURL() throws MalformedURLException, IOException, ParseException {
+  private static String getImageURL() throws IOException, ParseException {
     URL url = new URL(BING_PHOTO_OF_THE_DAY_URL);
     URLConnection conn = url.openConnection();
     JSONObject json;
