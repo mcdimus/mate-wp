@@ -6,13 +6,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.json.simple.parser.ParseException;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
@@ -85,34 +81,62 @@ public class Main {
       System.exit(2);
     }
 
-    System.out.println(imageData);
-    // try to load ${startdate}.properties
-    // if not exists: create new
-    //  store image data
-    //  download image
-    //  change wallpaper
-    // else:
-    //  do nothing
+    System.out.println(imageData); // TODO: delete this
 
-//    try {
-//      System.out.println("[x] Getting image URL...");
-//      String fullURL = getImageURL();
-//      System.out.println("\t [-] " + fullURL);
-//      System.out.println("[x] Downloading image...");
-//      String imageFullPath = downloadImage(fullURL);
-//      System.out.println("\t [-] downloaded to " + imageFullPath);
-//
-//      Properties props = new Properties();
-//      if (new File("props.properties").exists()) {
-//        props.load(new FileInputStream("props.properties"));
-//      }
-//      props.store(new FileOutputStream("props.properties"), null);
-//
-//      // execute command 'gsettings set org.mate.background picture-filename '/home/dmitri/Pictures/mate-wp/2014-08-27.jpg''
-//      execCommand(GSETTINGS, SET_CMD, SCHEMA, KEY, String.format("'%s'", imageFullPath));
-//    } catch (IOException | ParseException | InterruptedException ex) {
-//      System.err.println(ex.getMessage());
-//    }
+    // try to load ${startdate}.properties
+    File homeDir = new File(System.getenv().getOrDefault("HOME", "./"));
+    File imagesDir = new File(homeDir, "Pictures/mate-wp");
+    if (!imagesDir.exists()) {
+      if (!imagesDir.mkdirs()) {
+        System.err.println("Could not create directory: " + imagesDir.getAbsolutePath());
+        System.exit(2);
+      }
+    }
+
+    File imagePropsFile = new File(imagesDir, imageData.getStartDate() + ".properties");
+
+    Properties imageProps = new Properties();
+    if (!imagePropsFile.exists()) {
+      // if not exists: create new
+      //  store image data
+      imageProps.setProperty("startDate", imageData.getStartDate());
+      imageProps.setProperty("urlBase", imageData.getUrlBase());
+      imageProps.setProperty("copyright", imageData.getCopyright());
+      try {
+        imageProps.store(new FileWriter(imagePropsFile), null);
+      } catch (IOException e) {
+        System.err.println("Could not create image data: " + imagePropsFile.getAbsolutePath());
+        System.exit(3);
+      }
+
+      //  download image
+      File imageFile = null;
+      try {
+        System.out.println("Donwload URL: " + imageData.getDownloadURL());
+        URL url = new URL(imageData.getDownloadURL());
+        URLConnection urlConnection = url.openConnection();
+        long contentLength = urlConnection.getContentLengthLong();
+        System.out.println("\t [-] image size: " + contentLength + " bytes");
+        BufferedImage image = ImageIO.read(url);
+
+        imageFile = new File(imagesDir, imageData.getFilename());
+        ImageIO.write(image, "jpg", imageFile);
+      } catch (IOException e) {
+        System.err.println("Could not create image file: " + imageFile != null ? imageFile.getAbsolutePath() : e.getMessage());
+        System.exit(4);
+      }
+
+      //  change wallpaper
+      try {
+        // execute command 'gsettings set org.mate.background picture-filename '/home/dmitri/Pictures/mate-wp/2014-08-27.jpg''
+        execCommand(GSETTINGS, SET_CMD, SCHEMA, KEY, String.format("'%s'", imageFile.getAbsoluteFile()));
+      } catch (IOException | InterruptedException ex) {
+        System.err.println(ex.getMessage());
+      }
+    } else {
+      // currently do nothing
+    }
+
   }
 
   private static String execCommand(String... args) throws IOException, InterruptedException {
@@ -130,34 +154,4 @@ public class Main {
     return value;
   }
 
-  /*  private static String downloadImage(String fullURL) throws IOException {
-   URL url = new URL(fullURL);
-   URLConnection urlConnection = url.openConnection();
-   long contentLength = urlConnection.getContentLengthLong();
-   System.out.println("\t [-] image size: " + contentLength + " bytes");
-   BufferedImage image = ImageIO.read(url);
-   File homeDir = new File(System.getenv().getOrDefault("HOME", "./"));
-   File imagesDir = new File(homeDir, "Pictures/mate-wp");
-   if (!imagesDir.exists()) {
-   imagesDir.mkdirs();
-   }
-   File imageFile = new File(imagesDir, LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE) + EXTENSION);
-   ImageIO.write(image, "jpg", imageFile);
-
-   return imageFile.getAbsolutePath();
-   }
-
-   private static String getImageURL() throws IOException, ParseException {
-   URL url = new URL(BING_PHOTO_OF_THE_DAY_URL);
-   URLConnection conn = url.openConnection();
-   JSONObject json;
-   try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-   json = (JSONObject) JSONValue.parseWithException(in);
-   }
-   JSONArray images = (JSONArray) json.get("images");
-   JSONObject image = (JSONObject) images.get(0);
-   String imageBaseURL = (String) image.get("urlbase");
-
-   return String.format("%s%s_%s%s", BING_HOST, imageBaseURL, DIMENSION, EXTENSION);
-   }*/
 }

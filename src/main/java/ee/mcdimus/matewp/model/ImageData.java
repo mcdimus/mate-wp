@@ -3,14 +3,13 @@ package ee.mcdimus.matewp.model;
 import java.util.Objects;
 
 /**
- *
- * @author dmitri
+ * @author Dmitri Maksimov
  */
 public class ImageData {
 
   // Constatnts for the Bing API
   private static final String BING_HOST = "http://www.bing.com";
-  private static final String DIMENSION = "1920x1200";
+  private static final String DIMENSION = "1920x1080";
   private static final String EXTENSION = ".jpg";
 
   /**
@@ -58,6 +57,10 @@ public class ImageData {
     return String.format("%s%s_%s%s", BING_HOST, getUrlBase(), DIMENSION, EXTENSION);
   }
 
+  public String getFilename() {
+    return getStartDate() + EXTENSION;
+  }
+
   @Override
   public int hashCode() {
     int hash = 7;
@@ -75,23 +78,17 @@ public class ImageData {
       return false;
     }
     final ImageData other = (ImageData) obj;
-    if (!Objects.equals(this.startDate, other.startDate)) {
-      return false;
-    }
-    if (!Objects.equals(this.urlBase, other.urlBase)) {
-      return false;
-    }
-    return true;
+    return Objects.equals(this.startDate, other.startDate) && Objects.equals(this.urlBase, other.urlBase);
   }
 
   @Override
   public String toString() {
     return "ImageData{\n"
-            + "\tstartDate=" + startDate + "\n"
-            + "\tname=" + getName() + "\n"
-            + "\turlBase=" + urlBase + "\n"
-            + "\tcopyright=" + copyright + "\n"
-            + '}';
+      + "\tstartDate=" + startDate + "\n"
+      + "\tname=" + getName() + "\n"
+      + "\turlBase=" + urlBase + "\n"
+      + "\tcopyright=" + copyright + "\n"
+      + '}';
   }
 
 }
