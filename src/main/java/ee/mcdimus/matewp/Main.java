@@ -20,7 +20,7 @@ public class Main {
 
   private static final String CONFIG_FILENAME = "config.properties";
 
-  // Constatnts for the Bing API
+  // Constants for the Bing API
   private static final String BING_PHOTO_OF_THE_DAY_URL = "http://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US";
 
   // Constants for the MATE
@@ -33,30 +33,83 @@ public class Main {
   private static Properties props;
 
   public static void main(String[] args) {
-    // try to load 'config.properties', which is in the same folder with jar file
-    String configFileLocation = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParentFile().getPath();
-
-    props = new Properties();
-    System.out.println("[x] Loading config file from '" + configFileLocation + File.separator + CONFIG_FILENAME + "'...");
-    try (Reader input = new FileReader(configFileLocation + File.separator + CONFIG_FILENAME)) {
-      props.load(input);
-    } catch (IOException ex) {
-      // if not exists:
-      //  create
-      //  store system's current wallpaper
-      System.out.println("\t[-] failed. Will create new one...");
-      // get previous setting
-      String result;
-      try {
-        result = execCommand(GSETTINGS, GET_CMD, SCHEMA, KEY);
-        props.setProperty("matewp.system.background", result);
-        props.store(new FileWriter(configFileLocation + File.separator + CONFIG_FILENAME), null);
-      } catch (IOException | InterruptedException ex1) {
-        System.err.println("Failed to create properties file at '" + configFileLocation + File.separator + CONFIG_FILENAME + "'. Shutting down...");
-        System.exit(1);
-      }
+    String arg0 = null;
+    String arg1 = null;
+    switch (args.length) {
+      case 2:
+        arg1 = args[1];
+      case 1:
+        arg0 = args[0];
+        break;
+      default:
+        System.out.println("no args");
+        System.exit(0);
     }
 
+    switch (arg0) {
+      case "save":
+        saveCurrentWPconfig(arg1);
+        break;
+      case "restore":
+        restoreWPconfig(arg1);
+        break;
+      case "update":
+        update();
+        break;
+      default:
+        System.out.println("Unknown command...");
+        System.exit(0);
+    }
+  }
+
+  private static void saveCurrentWPconfig(String id) {
+    File homeDir = new File(System.getenv().getOrDefault("HOME", "./"));
+    File imagesDir = new File(homeDir, "Pictures/mate-wp");
+    File configDir = new File(imagesDir, "configs");
+    try {
+      if (!configDir.exists()) {
+        if (!configDir.mkdirs()) {
+          System.err.println("Could not create directory: " + configDir.getAbsolutePath());
+          System.exit(2);
+        }
+      }
+      Properties properties = new Properties();
+      String result = execCommand(GSETTINGS, GET_CMD, SCHEMA, KEY);
+      properties.setProperty("matewp.system.background", result);
+      try (FileWriter writer = new FileWriter(configDir + File.separator + id + ".properties")) {
+        properties.store(writer, null);
+      }
+    } catch (IOException | InterruptedException ex1) {
+      System.err.println("Failed to create properties file at '" + configDir + File.separator + id + ".properties" + "'. Shutting down...");
+      System.exit(1);
+    }
+  }
+
+  private static void restoreWPconfig(String arg1) {
+    File homeDir = new File(System.getenv().getOrDefault("HOME", "./"));
+    File imagesDir = new File(homeDir, "Pictures/mate-wp");
+    File configDir = new File(imagesDir, "configs");
+
+    File config = new File(configDir, arg1 + ".properties");
+    Properties properties = new Properties();
+    try {
+      properties.load(new FileInputStream(config));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    File imageFile = new File(properties.getProperty("matewp.system.background").replace("'",""));
+    // change wallpaper
+    try {
+      // execute command 'gsettings set org.mate.background picture-filename '/home/dmitri/Pictures/mate-wp/2014-08-27.jpg''
+      execCommand(GSETTINGS, SET_CMD, SCHEMA, KEY, String.format("'%s'", imageFile.getAbsoluteFile()));
+    } catch (IOException | InterruptedException ex) {
+      System.err.println(ex.getMessage());
+    }
+
+  }
+
+  private static void update() {
     // get image data
     ImageData imageData = new ImageData();
     try {
@@ -126,7 +179,7 @@ public class Main {
         System.exit(4);
       }
 
-      //  change wallpaper
+      // change wallpaper
       try {
         // execute command 'gsettings set org.mate.background picture-filename '/home/dmitri/Pictures/mate-wp/2014-08-27.jpg''
         execCommand(GSETTINGS, SET_CMD, SCHEMA, KEY, String.format("'%s'", imageFile.getAbsoluteFile()));
@@ -134,10 +187,17 @@ public class Main {
         System.err.println(ex.getMessage());
       }
     } else {
-      // currently do nothing
+      // change wallpaper
+      try {
+        // execute command 'gsettings set org.mate.background picture-filename '/home/dmitri/Pictures/mate-wp/2014-08-27.jpg''
+        File imageFile = new File(imagesDir, imageData.getFilename());
+        execCommand(GSETTINGS, SET_CMD, SCHEMA, KEY, String.format("'%s'", imageFile.getAbsoluteFile()));
+      } catch (IOException | InterruptedException ex) {
+        System.err.println(ex.getMessage());
+      }
     }
-
   }
+
 
   private static String execCommand(String... args) throws IOException, InterruptedException {
     ProcessBuilder processBuilder = new ProcessBuilder(args);

@@ -16,4 +16,5 @@ hs_err_pid*
 /.idea/
 *.iml
 gradlew*
+gradle
 props.properties
