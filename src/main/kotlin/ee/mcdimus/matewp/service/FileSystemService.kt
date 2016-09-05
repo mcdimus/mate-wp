@@ -28,6 +28,14 @@ class FileSystemService {
     return imagesDirectory
   }
 
+  fun getConfigsDirectory(): Path {
+    val configsDirectory = getImagesDirectory().resolve("configs")
+    if (Files.notExists(configsDirectory)) {
+      return Files.createDirectories(configsDirectory)
+    }
+    return configsDirectory
+  }
+
   fun saveProperties(propertiesPath: Path, propertyMap: Map<String, String>): Path {
     val properties = Properties()
     for ((key, value) in propertyMap) {
@@ -35,7 +43,7 @@ class FileSystemService {
     }
 
     Files.newOutputStream(propertiesPath).use {
-      properties.store(it, "Writing to a file using OutputStream")
+      properties.store(it, null)
     }
 
     return propertiesPath
