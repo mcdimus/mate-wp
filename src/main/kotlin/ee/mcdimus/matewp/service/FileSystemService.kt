@@ -49,4 +49,12 @@ class FileSystemService {
     return propertiesPath
   }
 
+  fun loadProperties(propertiesPath: Path): Properties {
+    val properties = Properties()
+    Files.newInputStream(propertiesPath).use {
+      properties.load(it)
+    }
+    return properties
+  }
+
 }
