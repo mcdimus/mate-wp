@@ -31,7 +31,6 @@ class SaveCommand(val wallpaperName: String) : Command {
     println("$result saved as '$wallpaperName'")
   }
 
-
   @Throws(IOException::class, InterruptedException::class)
   private fun execCommand(vararg args: String): String? {
     val processBuilder = ProcessBuilder(*args)
