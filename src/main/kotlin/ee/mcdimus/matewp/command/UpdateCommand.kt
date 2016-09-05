@@ -32,6 +32,8 @@ class UpdateCommand : Command {
     val imagePropertiesPath = imagesDir.resolve("${imageData.startDate}.properties")
 
     if (Files.notExists(imagePropertiesPath)) {
+      SaveCommand("previous").execute()
+
       fileSystemService.saveProperties(imagePropertiesPath, linkedMapOf(
           Pair("startDate", imageData.startDate),
           Pair("urlBase", imageData.urlBase),
