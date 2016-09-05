@@ -10,6 +10,7 @@ object CommandFactory {
       "update" -> return UpdateCommand()
       "save" -> return SaveCommand(commandArgs.elementAtOrElse(0, { "" }))
       "restore" -> return RestoreCommand(commandArgs.elementAtOrElse(0, { "" }))
+      "list" -> return ListCommand()
       else -> return UnknownCommand(commandId)
     }
   }
