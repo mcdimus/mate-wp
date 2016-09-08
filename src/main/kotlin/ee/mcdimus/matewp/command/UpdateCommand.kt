@@ -2,26 +2,18 @@ package ee.mcdimus.matewp.command
 
 import ee.mcdimus.matewp.service.BingPhotoOfTheDayService
 import ee.mcdimus.matewp.service.FileSystemService
-import java.io.BufferedReader
+import ee.mcdimus.matewp.service.OperationSystemService
 import java.io.File
 import java.io.IOException
-import java.io.InputStreamReader
 import java.net.URL
 import java.nio.file.Files
 import javax.imageio.ImageIO
 
 class UpdateCommand : Command {
 
-  companion object {
-    private const val GSETTINGS = "gsettings"
-    private const val SET_CMD = "set"
-    private const val GET_CMD = "get"
-    private const val SCHEMA = "org.mate.background"
-    private const val KEY = "picture-filename"
-  }
-
   private val bingPhotoOfTheDayService: BingPhotoOfTheDayService by lazy { BingPhotoOfTheDayService() }
   private val fileSystemService: FileSystemService by lazy { FileSystemService() }
+  private val opSystemService: OperationSystemService by lazy { OperationSystemService() }
 
   override fun execute() {
     // get image data
@@ -35,9 +27,9 @@ class UpdateCommand : Command {
       SaveCommand("previous").execute()
 
       fileSystemService.saveProperties(imagePropertiesPath, linkedMapOf(
-          Pair("startDate", imageData.startDate),
-          Pair("urlBase", imageData.urlBase),
-          Pair("copyright", imageData.copyright)
+          "startDate" to imageData.startDate,
+          "urlBase" to imageData.urlBase,
+          "copyright" to imageData.copyright
       ))
 
       //  download image
@@ -57,45 +49,11 @@ class UpdateCommand : Command {
         System.exit(4)
       }
 
-      // change wallpaper
-      try {
-        // execute command 'gsettings set org.mate.background picture-filename '/home/dmitri/Pictures/mate-wp/2014-08-27.jpg''
-        execCommand(GSETTINGS, SET_CMD, SCHEMA, KEY, String.format("'%s'", imageFile!!.absoluteFile))
-      } catch (ex: IOException) {
-        System.err.println(ex.message)
-      } catch (ex: InterruptedException) {
-        System.err.println(ex.message)
-      }
-
+        opSystemService.setAsWallpaper(imageFile?.toPath()!!)
     } else {
-      // change wallpaper
-      try {
-        // execute command 'gsettings set org.mate.background picture-filename '/home/dmitri/Pictures/mate-wp/2014-08-27.jpg''
-        val imageFile = File(imagesDir.toFile(), imageData.filename)
-        execCommand(GSETTINGS, SET_CMD, SCHEMA, KEY, String.format("'%s'", imageFile.absoluteFile))
-      } catch (ex: IOException) {
-        System.err.println(ex.message)
-      } catch (ex: InterruptedException) {
-        System.err.println(ex.message)
-      }
-
+        val imageFile = imagesDir.resolve(imageData.filename)
+        opSystemService.setAsWallpaper(imageFile)
     }
-  }
-
-  @Throws(IOException::class, InterruptedException::class)
-  private fun execCommand(vararg args: String): String? {
-    val processBuilder = ProcessBuilder(*args)
-    processBuilder.redirectErrorStream(true)
-    val process = processBuilder.start()
-    var value: String? = null
-    BufferedReader(InputStreamReader(process.inputStream)).use { `in` ->
-      value = `in`.readLine()
-      //        while ((line = in.readLine()) != null) {
-      //          value += line + "\n";
-      //        }
-    }
-    process.waitFor()
-    return value
   }
 
 }
