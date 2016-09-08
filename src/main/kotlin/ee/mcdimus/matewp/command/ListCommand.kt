@@ -23,7 +23,7 @@ class ListCommand : Command {
         .forEach { println("\t[*] $it") }
   }
 
-  private fun getLastModifiedTime(it: Path): String
+  private fun getLastModifiedTime(it: Path)
       = SimpleDateFormat("dd.MM.yyyy HH:mm").format(Files.getLastModifiedTime(it).toMillis())
 
 }

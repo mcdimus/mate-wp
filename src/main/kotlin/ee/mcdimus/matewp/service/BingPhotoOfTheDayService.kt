@@ -31,7 +31,7 @@ class BingPhotoOfTheDayService {
 
         val images = jsonObject[IMAGES] as JSONArray
         if (images.isEmpty()) {
-          throw IllegalStateException("'${IMAGES}' is empty")
+          throw IllegalStateException("'$IMAGES' is empty")
         }
 
         val image = images[0] as JSONObject
