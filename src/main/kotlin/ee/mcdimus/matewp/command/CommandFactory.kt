@@ -9,7 +9,7 @@ object CommandFactory {
     when (commandId) {
       "update" -> return UpdateCommand()
       "save" -> return SaveCommand(commandArgs.elementAtOrElse(0, { "" }))
-      "restore" -> return RestoreCommand(commandArgs.elementAtOrElse(0, { "" }))
+      "restore" -> return RestoreCommand(commandArgs.elementAtOrElse(0, { "previous" }))
       "list" -> return ListCommand()
       else -> return UnknownCommand(commandId)
     }
