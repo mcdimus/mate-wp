@@ -37,9 +37,10 @@ class UpdateCommand : Command {
       var imageFile: File? = null
       try {
         val image = imageService.download(imageData.downloadURL)
+        val imageWithText = imageService.addText(image!!, imageData.copyright)
 
         imageFile = File(imagesDir.toFile(), imageData.filename)
-        ImageIO.write(image, "jpg", imageFile)
+        ImageIO.write(imageWithText, "jpg", imageFile)
       } catch (e: IOException) {
         System.err.println(if ("Could not create image file: " + imageFile!! != null) imageFile.absolutePath else e.message)
         System.exit(4)
