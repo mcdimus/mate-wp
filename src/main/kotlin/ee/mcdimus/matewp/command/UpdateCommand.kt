@@ -2,10 +2,10 @@ package ee.mcdimus.matewp.command
 
 import ee.mcdimus.matewp.service.BingPhotoOfTheDayService
 import ee.mcdimus.matewp.service.FileSystemService
+import ee.mcdimus.matewp.service.ImageService
 import ee.mcdimus.matewp.service.OperationSystemService
 import java.io.File
 import java.io.IOException
-import java.net.URL
 import java.nio.file.Files
 import javax.imageio.ImageIO
 
@@ -14,6 +14,7 @@ class UpdateCommand : Command {
   private val bingPhotoOfTheDayService: BingPhotoOfTheDayService by lazy { BingPhotoOfTheDayService() }
   private val fileSystemService: FileSystemService by lazy { FileSystemService() }
   private val opSystemService: OperationSystemService by lazy { OperationSystemService() }
+  private val imageService: ImageService by lazy { ImageService() }
 
   override fun execute() {
     // get image data
@@ -35,12 +36,7 @@ class UpdateCommand : Command {
       //  download image
       var imageFile: File? = null
       try {
-        println("Download URL: " + imageData.downloadURL)
-        val url = URL(imageData.downloadURL)
-        val urlConnection = url.openConnection()
-        val contentLength = urlConnection.contentLengthLong
-        println("\t [-] image size: $contentLength bytes")
-        val image = ImageIO.read(url)
+        val image = imageService.download(imageData.downloadURL)
 
         imageFile = File(imagesDir.toFile(), imageData.filename)
         ImageIO.write(image, "jpg", imageFile)
