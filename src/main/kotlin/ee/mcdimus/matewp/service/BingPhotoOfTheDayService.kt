@@ -51,7 +51,7 @@ class BingPhotoOfTheDayService {
   private fun validateProperties(jsonObject: JSONObject, properties: List<String>) {
     for (property in properties) {
       if (!jsonObject.contains(property)) {
-        throw IllegalStateException("${jsonObject.toString()} has no required property '$property'")
+        throw IllegalStateException("$jsonObject has no required property '$property'")
       }
     }
   }
