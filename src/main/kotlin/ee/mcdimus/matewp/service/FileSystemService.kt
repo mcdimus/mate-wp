@@ -11,12 +11,13 @@ import java.util.*
 class FileSystemService {
 
   companion object {
-    private const val HOME = "HOME"
+    private const val USER_HOME = "user.home"
   }
 
   fun getHomeDirectory(): Path {
-    val homeDirectoryPath = System.getenv()
-        .getOrElse(HOME, { throw IllegalStateException("environment variable $HOME is no defined") })
+    val homeDirectoryPath = System.getProperty(USER_HOME)
+            ?: throw IllegalStateException("system property $USER_HOME is not defined")
+
     return Paths.get(homeDirectoryPath)
   }
 
