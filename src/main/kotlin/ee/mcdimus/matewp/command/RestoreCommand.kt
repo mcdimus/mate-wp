@@ -1,14 +1,15 @@
 package ee.mcdimus.matewp.command
 
 import ee.mcdimus.matewp.service.FileSystemService
-import ee.mcdimus.matewp.service.OperationSystemService
+import ee.mcdimus.matewp.service.OpSysService
+import ee.mcdimus.matewp.service.OpSysServiceFactory
 import java.nio.file.Files
 import java.nio.file.Paths
 
 class RestoreCommand(val wallpaperName: String) : Command {
 
   private val fileSystemService: FileSystemService by lazy { FileSystemService() }
-  private val opSystemService: OperationSystemService by lazy { OperationSystemService() }
+  private val opSystemService: OpSysService by lazy { OpSysServiceFactory.get() }
 
   override fun execute() {
     val configsDirectory = fileSystemService.getConfigsDirectory()
