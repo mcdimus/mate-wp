@@ -14,7 +14,10 @@ object Main {
       return
     }
 
-    val command = CommandFactory.getCommand(args[0], *args.drop(1).toTypedArray())
+    val command = CommandFactory.get(
+        commandId = args[0],
+        commandArgs = *args.drop(1).toTypedArray()
+    )
     command.execute()
   }
 
@@ -23,6 +26,7 @@ object Main {
     println("\t[x] 'mate-wp update': will download and set as wallpaper the current photo of the day.")
     println("\t[x] 'mate-wp save <name>': will save the current wallpaper with <name> so that it will be possible to restore it.")
     println("\t[x] 'mate-wp restore <name>': will set as wallpaper the photo which was saved with <name>.")
+    println("\t[x] 'mate-wp list': will list all saved wallpapers.")
   }
 
 }
