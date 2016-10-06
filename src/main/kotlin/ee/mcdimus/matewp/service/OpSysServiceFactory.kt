@@ -5,8 +5,18 @@ package ee.mcdimus.matewp.service
  */
 object OpSysServiceFactory {
 
-  fun get(): OpSysService {
-    return LinuxMateService()
+  enum class OS {
+    LINUX, WINDOWS
+  }
+
+  fun get(): OpSysService = when (detectOS()) {
+    OS.LINUX -> LinuxMateService()
+    OS.WINDOWS -> WindowsService()
+  }
+
+  private fun detectOS() = when (System.getProperty("os.name")) {
+    "Windows 7" -> OS.WINDOWS
+    else -> OS.LINUX
   }
 
 }
