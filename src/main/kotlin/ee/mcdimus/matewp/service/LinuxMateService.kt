@@ -8,7 +8,7 @@ import java.nio.file.Paths
 /**
  * @author Dmitri Maksimov
  */
-class OperationSystemService {
+class LinuxMateService : OpSysService {
 
   companion object {
     private const val GSETTINGS = "gsettings"
@@ -19,24 +19,18 @@ class OperationSystemService {
     private const val KEY_PICTURE_OPTIONS = "picture-options"
 
     enum class PictureOptions {
-      WALLPAPER,
-      CENTERED,
-      SCALED,
-      STRETCHED,
-      ZOOM,
-      SPANNED;
+      WALLPAPER, CENTERED, SCALED, STRETCHED, ZOOM, SPANNED;
 
       override fun toString() = name.toLowerCase()
     }
   }
 
-  fun setAsWallpaper(filePath: Path) {
-    // execute command 'gsettings set org.mate.background picture-filename '/home/dmitri/Pictures/mate-wp/___.jpg''
+  override fun setAsWallpaper(filePath: Path) {
     execCommand(GSETTINGS, SET_CMD, SCHEMA, KEY_PICTURE_FILENAME, "'${filePath.toAbsolutePath()}'")
     execCommand(GSETTINGS, SET_CMD, SCHEMA, KEY_PICTURE_OPTIONS, "'${PictureOptions.STRETCHED}'")
   }
 
-  fun getCurrentWallpaper(): Path {
+  override fun getCurrentWallpaper(): Path {
     return Paths.get(execCommand(GSETTINGS, GET_CMD, SCHEMA, KEY_PICTURE_FILENAME)!!.trim('\'')).toAbsolutePath()
   }
 
@@ -45,8 +39,8 @@ class OperationSystemService {
     processBuilder.redirectErrorStream(true)
     val process = processBuilder.start()
     var value: String? = null
-    BufferedReader(InputStreamReader(process.inputStream)).use { `in` ->
-      value = `in`.readLine()
+    BufferedReader(InputStreamReader(process.inputStream)).use {
+      value = it.readLine()
     }
     process.waitFor()
     return value

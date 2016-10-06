@@ -5,7 +5,7 @@ package ee.mcdimus.matewp.command
  */
 object CommandFactory {
 
-  fun getCommand(commandId: String, vararg commandArgs: String): Command {
+  fun get(commandId: String, vararg commandArgs: String): Command {
     when (commandId) {
       "update" -> return UpdateCommand()
       "save" -> return SaveCommand(commandArgs.elementAtOrElse(0, { "" }))
