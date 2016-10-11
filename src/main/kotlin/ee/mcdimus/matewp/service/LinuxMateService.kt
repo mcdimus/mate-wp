@@ -10,28 +10,33 @@ import java.nio.file.Paths
  */
 class LinuxMateService : OpSysService {
 
-  companion object {
-    private const val GSETTINGS = "gsettings"
-    private const val SET_CMD = "set"
-    private const val GET_CMD = "get"
-    private const val SCHEMA = "org.mate.background"
-    private const val KEY_PICTURE_FILENAME = "picture-filename"
-    private const val KEY_PICTURE_OPTIONS = "picture-options"
+  private enum class PictureOptions {
+    WALLPAPER, CENTERED, SCALED, STRETCHED, ZOOM, SPANNED;
 
-    enum class PictureOptions {
-      WALLPAPER, CENTERED, SCALED, STRETCHED, ZOOM, SPANNED;
-
-      override fun toString() = name.toLowerCase()
-    }
+    override fun toString() = name.toLowerCase()
   }
 
   override fun setAsWallpaper(filePath: Path) {
-    execCommand(GSETTINGS, SET_CMD, SCHEMA, KEY_PICTURE_FILENAME, "'${filePath.toAbsolutePath()}'")
-    execCommand(GSETTINGS, SET_CMD, SCHEMA, KEY_PICTURE_OPTIONS, "'${PictureOptions.STRETCHED}'")
+    val scriptBody = "#!/bin/bash\n\n" +
+        "PID=\$(pgrep mate-panel)\n" +
+        "export DBUS_SESSION_BUS_ADDRESS=\$(grep -z DBUS_SESSION_BUS_ADDRESS /proc/\$PID/environ|cut -d= -f2-)\n\n" +
+        "gsettings set org.mate.background picture-filename '${filePath.toAbsolutePath()}'\n" +
+        "gsettings set org.mate.background picture-options '${PictureOptions.STRETCHED}'\n"
+
+    FileSystemService().doWithTempScript(scriptBody) {
+      execCommand("/bin/sh", it.toAbsolutePath().toString())
+    }
   }
 
   override fun getCurrentWallpaper(): Path {
-    return Paths.get(execCommand(GSETTINGS, GET_CMD, SCHEMA, KEY_PICTURE_FILENAME)!!.trim('\'')).toAbsolutePath()
+    val scriptBody = "#!/bin/bash\n\n" +
+        "PID=\$(pgrep mate-panel)\n" +
+        "export DBUS_SESSION_BUS_ADDRESS=\$(grep -z DBUS_SESSION_BUS_ADDRESS /proc/\$PID/environ|cut -d= -f2-)\n\n" +
+        "gsettings get org.mate.background picture-filename\n"
+
+    return FileSystemService().doWithTempScript(scriptBody) {
+      Paths.get(execCommand("/bin/sh", it.toAbsolutePath().toString())?.trim('\'')).toAbsolutePath()
+    }
   }
 
   private fun execCommand(vararg args: String): String? {

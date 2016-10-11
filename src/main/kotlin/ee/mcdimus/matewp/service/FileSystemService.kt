@@ -3,6 +3,7 @@ package ee.mcdimus.matewp.service
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.nio.file.attribute.PosixFilePermissions
 import java.util.*
 
 /**
@@ -56,6 +57,20 @@ class FileSystemService {
       properties.load(it)
     }
     return properties
+  }
+
+  fun <T> doWithTempScript(content:String, action: (path:Path) -> T): T {
+    val tempDir = Files.createTempDirectory("mate-wp")
+    val scriptFilePath = tempDir.resolve("update-wp")
+    val permissions = PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwxrwxr-x"))
+    Files.createFile(scriptFilePath, permissions)
+    try {
+      Files.write(scriptFilePath, content.toByteArray())
+      return action(scriptFilePath)
+    } finally {
+      Files.deleteIfExists(scriptFilePath)
+      Files.deleteIfExists(tempDir)
+    }
   }
 
 }
