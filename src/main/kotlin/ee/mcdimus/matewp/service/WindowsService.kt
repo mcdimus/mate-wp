@@ -12,14 +12,20 @@ class WindowsService : OpSysService {
 
   override fun setAsWallpaper(filePath: Path) {
     execCommand("cmd", "/c", "REG", "ADD", "\"HKCU\\Control Panel\\Desktop\"", "/v", "Wallpaper", "/t",  "REG_SZ", "/d",  filePath.toAbsolutePath().toString(), "/f")
-    // Make the changes effective immediately
-    execCommand("cmd", "/c", "RUNDLL32.EXE", "user32.dll,",  "UpdatePerUserSystemParameters")
+    applyChanges()
+  }
+
+  /**
+   * Makes the changes effective immediately.
+   */
+  private fun applyChanges() {
+    execCommand("cmd", "/c", "RUNDLL32.EXE", "user32.dll, ", "UpdatePerUserSystemParameters")
   }
 
   override fun getCurrentWallpaper(): Path {
     val pathString = execCommand("cmd", "/c", "REG", "QUERY", "\"HKCU\\Control Panel\\Desktop\"", "/v", "Wallpaper")
         ?.split(Regex("\\s+"))
-        ?.last { it.isNotBlank() }
+        ?.last(String::isNotBlank)
 
     return Paths.get(pathString)
   }
