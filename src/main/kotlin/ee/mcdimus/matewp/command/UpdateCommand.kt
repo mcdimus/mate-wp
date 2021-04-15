@@ -9,6 +9,7 @@ import java.io.File
 import java.io.IOException
 import java.nio.file.Files
 import javax.imageio.ImageIO
+import kotlin.system.exitProcess
 
 class UpdateCommand : Command {
 
@@ -43,11 +44,11 @@ class UpdateCommand : Command {
         imageFile = File(imagesDir.toFile(), imageData.filename)
         ImageIO.write(imageWithText, "jpg", imageFile)
       } catch (e: IOException) {
-        System.err.println(if ("Could not create image file: " + imageFile!! != null) imageFile.absolutePath else e.message)
-        System.exit(4)
+        System.err.println(imageFile?.absolutePath)
+        exitProcess(4)
       }
 
-        opSystemService.setAsWallpaper(imageFile?.toPath()!!)
+        opSystemService.setAsWallpaper(imageFile.toPath())
     } else {
         val imageFile = imagesDir.resolve(imageData.filename)
         opSystemService.setAsWallpaper(imageFile)

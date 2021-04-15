@@ -3,7 +3,7 @@ version = "1.0"
 
 plugins {
     application
-    kotlin("jvm") version "1.3.11"
+    kotlin("jvm") version "1.4.32"
 }
 
 application {
@@ -15,12 +15,12 @@ repositories {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
 tasks.wrapper {
-    gradleVersion = "5.1"
+    gradleVersion = "7.0"
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -31,6 +31,7 @@ object Version {
 
 dependencies {
     compile(kotlin("stdlib"))
+    compile(kotlin("reflect"))
     compile("com.googlecode.json-simple:json-simple:1.1.1")
 
     testCompile("org.junit.jupiter:junit-jupiter-api:${Version.junit}")

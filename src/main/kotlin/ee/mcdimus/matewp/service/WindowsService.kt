@@ -34,7 +34,7 @@ class WindowsService : OpSysService {
     val processBuilder = ProcessBuilder(*args)
     processBuilder.redirectErrorStream(true)
     val process = processBuilder.start()
-    var output: String? = null
+    var output: String?
     BufferedReader(InputStreamReader(process.inputStream)).use {
       output = it.readText()
     }

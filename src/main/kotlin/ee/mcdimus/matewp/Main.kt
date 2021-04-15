@@ -16,7 +16,7 @@ object Main {
 
     val command = CommandFactory.get(
         commandId = args[0],
-        commandArgs = *args.drop(1).toTypedArray()
+        commandArgs = args.drop(1).toTypedArray()
     )
     command.execute()
   }

@@ -43,7 +43,7 @@ class LinuxMateService : OpSysService {
     val processBuilder = ProcessBuilder(*args)
     processBuilder.redirectErrorStream(true)
     val process = processBuilder.start()
-    var value: String? = null
+    var value: String?
     BufferedReader(InputStreamReader(process.inputStream)).use {
       value = it.readLine()
     }
