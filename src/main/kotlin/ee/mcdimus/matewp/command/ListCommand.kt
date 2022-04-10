@@ -4,6 +4,7 @@ import ee.mcdimus.matewp.service.FileSystemService
 import java.nio.file.Files
 import java.nio.file.Path
 import java.text.SimpleDateFormat
+import java.util.Locale
 
 /**
  * @author Dmitri Maksimov
@@ -18,12 +19,11 @@ class ListCommand : Command {
     println("Currently saved wallpapers:")
 
     Files.list(configsDirectory)
-        .sorted { a, b -> Files.getLastModifiedTime(a).compareTo(Files.getLastModifiedTime(b)) }
-        .map { String.format("%-20s saved at %s", "'${it.fileName.toString().removeSuffix(".properties")}'", getLastModifiedTime(it)) }
-        .forEach { println("\t[*] $it") }
+      .sorted { a, b -> Files.getLastModifiedTime(a).compareTo(Files.getLastModifiedTime(b)) }
+      .map { String.format(Locale.US, "%-20s saved at %s", "'${it.fileName.toString().removeSuffix(".properties")}'", getLastModifiedTime(it)) }
+      .forEach { println("\t[*] $it") }
   }
 
-  private fun getLastModifiedTime(it: Path)
-      = SimpleDateFormat("dd.MM.yyyy HH:mm").format(Files.getLastModifiedTime(it).toMillis())
+  private fun getLastModifiedTime(it: Path) = SimpleDateFormat("dd.MM.yyyy HH:mm").format(Files.getLastModifiedTime(it).toMillis())
 
 }

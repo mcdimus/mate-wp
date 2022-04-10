@@ -43,9 +43,9 @@ class UpdateCommand : Command {
 
         imageFile = File(imagesDir.toFile(), imageData.filename)
         ImageIO.write(imageWithText, "jpg", imageFile)
-      } catch (e: IOException) {
+      } catch (ignored: IOException) {
         System.err.println(imageFile?.absolutePath)
-        exitProcess(4)
+        exitProcess(1)
       }
 
         opSystemService.setAsWallpaper(imageFile.toPath())

@@ -3,6 +3,7 @@ package ee.mcdimus.matewp.service
 import java.awt.Color
 import java.awt.Font
 import java.awt.image.BufferedImage
+import java.io.IOException
 import java.net.URL
 import javax.imageio.ImageIO
 
@@ -21,7 +22,7 @@ class ImageService {
       println("\t [-] size: $contentLength bytes")
 
       ImageIO.read(url)
-    } catch(e: Exception) {
+    } catch (e: IOException) {
       System.err.println("\t [-] download failed: ${e.message}")
       null
     }
@@ -29,6 +30,7 @@ class ImageService {
 
   private fun getImageSize(url: URL) = url.openConnection().contentLengthLong
 
+  @Suppress("MagicNumber")
   fun addText(image: BufferedImage, text: String): BufferedImage {
     val shapeX = 10
     val shapeY = 40

@@ -5,10 +5,11 @@ plugins {
   application
   kotlin("jvm") version "1.6.20"
   id("org.jetbrains.kotlinx.kover") version "0.5.0"
+  id("io.gitlab.arturbosch.detekt").version("1.20.0-RC2")
 }
 
 application {
-  mainClass.set("ee.mcdimus.matewp.Main")
+  mainClass.set("ee.mcdimus.matewp.MainKt")
 }
 
 repositories {
@@ -40,4 +41,8 @@ tasks.test {
   useJUnitPlatform {
     includeEngines("spek2")
   }
+}
+
+detekt {
+  config = files("etc/detekt.yml")
 }

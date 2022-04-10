@@ -11,7 +11,20 @@ import java.nio.file.Paths
 class WindowsService : OpSysService {
 
   override fun setAsWallpaper(filePath: Path) {
-    execCommand("cmd", "/c", "REG", "ADD", "\"HKCU\\Control Panel\\Desktop\"", "/v", "Wallpaper", "/t",  "REG_SZ", "/d",  filePath.toAbsolutePath().toString(), "/f")
+    execCommand(
+      "cmd",
+      "/c",
+      "REG",
+      "ADD",
+      "\"HKCU\\Control Panel\\Desktop\"",
+      "/v",
+      "Wallpaper",
+      "/t",
+      "REG_SZ",
+      "/d",
+      filePath.toAbsolutePath().toString(),
+      "/f"
+    )
     applyChanges()
   }
 
@@ -24,8 +37,8 @@ class WindowsService : OpSysService {
 
   override fun getCurrentWallpaper(): Path {
     val pathString = execCommand("cmd", "/c", "REG", "QUERY", "\"HKCU\\Control Panel\\Desktop\"", "/v", "Wallpaper")
-        ?.split(Regex("\\s+"))
-        ?.last(String::isNotBlank)
+      ?.split(Regex("\\s+"))
+      ?.last(String::isNotBlank)
 
     return Paths.get(pathString)
   }
