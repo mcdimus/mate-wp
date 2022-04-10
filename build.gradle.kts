@@ -3,11 +3,11 @@ version = "1.0"
 
 plugins {
     application
-    kotlin("jvm") version "1.4.32"
+    kotlin("jvm") version "1.6.20"
 }
 
 application {
-    mainClassName = "ee.mcdimus.matewp.Main"
+    mainClass.set("ee.mcdimus.matewp.Main")
 }
 
 repositories {
@@ -20,33 +20,23 @@ java {
 }
 
 tasks.wrapper {
-    gradleVersion = "7.0"
+    gradleVersion = "7.4.2"
     distributionType = Wrapper.DistributionType.ALL
 }
 
-object Version {
-    const val junit = "5.3.2"
-    const val spek = "1.1.5"
-}
-
 dependencies {
-    compile(kotlin("stdlib"))
-    compile(kotlin("reflect"))
-    compile("com.googlecode.json-simple:json-simple:1.1.1")
+    implementation(kotlin("stdlib"))
+    implementation(kotlin("reflect"))
+    implementation("com.googlecode.json-simple:json-simple:1.1.1")
 
-    testCompile("org.junit.jupiter:junit-jupiter-api:${Version.junit}")
-    testRuntime("org.junit.jupiter:junit-jupiter-engine:${Version.junit}")
-    testCompile("org.jetbrains.spek:spek-api:${Version.spek}"){
-        exclude(group = "org.jetbrains.kotlin")
-    }
-    testRuntime("org.jetbrains.spek:spek-junit-platform-engine:${Version.spek}") {
-        exclude(group = "org.jetbrains.kotlin")
-        exclude(group = "org.junit.platform")
-    }
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
+    testImplementation("org.spekframework.spek2:spek-dsl-jvm:2.0.18")
+    testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:2.0.18")
 }
 
 tasks.test {
     useJUnitPlatform {
-        includeEngines("spek")
+        includeEngines("spek2")
     }
 }
