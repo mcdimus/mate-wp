@@ -9,30 +9,21 @@ object OpSysServiceFactory {
     LINUX, WINDOWS
   }
 
-  fun get(): OpSysService {
-    return when (detectOS()) {
-      OS.LINUX -> LinuxMateService()
-      OS.WINDOWS -> WindowsService()
-    }
+  fun get() = when (detectOS()) {
+    OS.LINUX -> LinuxMateService()
+    OS.WINDOWS -> WindowsService()
   }
 
-  private fun detectOS(): OS {
-    val osName = System.getProperty("os.name")
-    return when (osName) {
-      "Windows 7" -> OS.WINDOWS
-      "Linux" -> OS.LINUX
-      else -> makeGuess(osName)
-    }
+  private fun detectOS() = when (val osName = System.getProperty("os.name")) {
+    "Windows 7" -> OS.WINDOWS
+    "Linux" -> OS.LINUX
+    else -> makeGuess(osName)
   }
 
-  private fun  makeGuess(osName: String): OS {
-    if (osName.contains("windows", ignoreCase = true)) {
-      return OS.WINDOWS
-    } else if (osName.contains("linux", ignoreCase = true)) {
-      return OS.LINUX
-    } else {
-      throw IllegalStateException("unsupported operating system: $osName")
-    }
+  private fun makeGuess(osName: String) = when {
+    osName.contains("windows", ignoreCase = true) -> OS.WINDOWS
+    osName.contains("linux", ignoreCase = true) -> OS.LINUX
+    else -> throw IllegalStateException("unsupported operating system: $osName")
   }
 
 }

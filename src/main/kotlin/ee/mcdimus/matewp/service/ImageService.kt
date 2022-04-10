@@ -44,7 +44,7 @@ class ImageService {
     val fontMetrics = imageGraphics.getFontMetrics(font)
     val lineHeight = fontMetrics.height
 
-    val longestTextToken = textTokens.sortedByDescending { it.length }.first()
+    val longestTextToken = textTokens.maxByOrNull { it.length }!!
     val shapeWidth = fontMetrics.getStringBounds(longestTextToken, imageGraphics).width + (2 * lineHeight)
     val shapeHeight = (textTokens.size + 2) * lineHeight
     imageGraphics.color = Color(255, 255, 255, 128)
