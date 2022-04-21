@@ -3,9 +3,12 @@ version = "1.0"
 
 plugins {
   application
-  kotlin("jvm") version "1.6.20"
-  id("org.jetbrains.kotlinx.kover") version "0.5.0"
-  id("io.gitlab.arturbosch.detekt").version("1.20.0-RC2")
+  alias(libs.plugins.kotlin.jvm)
+  alias(libs.plugins.kotlin.serialization)
+  alias(libs.plugins.detekt)
+  alias(libs.plugins.kover)
+  alias(libs.plugins.versions)
+  alias(libs.plugins.versions.catalogUpdate)
 }
 
 application {
@@ -21,28 +24,30 @@ java {
   targetCompatibility = JavaVersion.VERSION_11
 }
 
-tasks.wrapper {
-  gradleVersion = "7.4.2"
-  distributionType = Wrapper.DistributionType.ALL
-}
-
 dependencies {
   implementation(kotlin("stdlib"))
   implementation(kotlin("reflect"))
-  implementation("com.googlecode.json-simple:json-simple:1.1.1")
+  implementation(libs.kodein)
+  implementation(libs.kotlinx.serialization.json)
 
-  testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
-  testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
-  testImplementation("org.spekframework.spek2:spek-dsl-jvm:2.0.18")
-  testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:2.0.18")
+  testImplementation(libs.bundles.kotest)
+  testImplementation(libs.junit5.api)
+  testRuntimeOnly(libs.junit5.engine)
 }
 
-tasks.test {
-  useJUnitPlatform {
-    includeEngines("spek2")
-  }
+versionCatalogUpdate {
+  sortByKey.set(false)
+}
+
+tasks.withType<Test>().configureEach {
+  useJUnitPlatform()
 }
 
 detekt {
   config = files("etc/detekt.yml")
+}
+
+tasks.wrapper {
+  gradleVersion = "7.4.2"
+  distributionType = Wrapper.DistributionType.ALL
 }
