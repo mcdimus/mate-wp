@@ -1,18 +1,37 @@
 package ee.mcdimus.matewp
 
-import ee.mcdimus.matewp.command.CommandFactory
+import ee.mcdimus.matewp.cli.CLICommand
+import ee.mcdimus.matewp.cli.CommandHandler
+import ee.mcdimus.matewp.usecase.DownloadWallpaper
+import ee.mcdimus.matewp.usecase.FetchWallpaperMetadata
+import ee.mcdimus.matewp.usecase.InstallWallpaper
+import org.kodein.di.DI
+import org.kodein.di.bindSingleton
+import org.kodein.di.instance
+import org.slf4j.LoggerFactory
+import java.net.http.HttpClient
+import kotlin.system.measureTimeMillis
+
+private val LOG = LoggerFactory.getLogger("cli-main")
 
 fun main(args: Array<String>) {
-  if (args.isEmpty()) {
-    printUsage()
-    return
-  }
+  val elapsedMillis = measureTimeMillis {
+    LOG.info("CLI execution start. Arguments: {}.", args)
+    if (args.isEmpty()) {
+      printUsage()
+    } else {
+      val di = DI {
+        bindSingleton { HttpClient.newHttpClient() }
+        bindSingleton { FetchWallpaperMetadata(httpClient = instance()) }
+        bindSingleton { DownloadWallpaper() }
+        bindSingleton { InstallWallpaper() }
+      }
 
-  val command = CommandFactory.get(
-    commandId = args[0],
-    commandArgs = args.drop(1).toTypedArray()
-  )
-  command.execute()
+      val cliCommand = CLICommand(id = args[0], args = args.drop(1))
+      CommandHandler.of(cliCommand, di).handle()
+    }
+  }
+  LOG.info("CLI execution end. Time elapsed: {} ms.", elapsedMillis)
 }
 
 private fun printUsage() {
