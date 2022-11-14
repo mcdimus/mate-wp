@@ -19,9 +19,18 @@ class InstallWallpaper : UseCase<InstallWallpaper.InstallWallpaperCommand, Insta
     @Language("Shell Script")
     val scriptBody = """
       #!/bin/bash
-    
-      PID=$(pgrep mate-panel)
-      export DBUS_SESSION_BUS_ADDRESS=$(grep -z DBUS_SESSION_BUS_ADDRESS /proc/${"$"}PID/environ|cut -d= -f2-)
+      
+      if [[ "${'$'}(whoami)" == "root" ]]; then
+        for user in ${'$'}(cut -d: -f1,3 /etc/passwd | grep -E ':[0-9]{4}${'$'}' | cut -d: -f1); do
+          cp '${command.wallpaperPath.toAbsolutePath()}' "/home/${'$'}user/Pictures/mate-wp"
+          chown ${'$'}user:${'$'}user "/home/${'$'}user/Pictures/mate-wp/${command.wallpaperPath.fileName}"
+          userId=${'$'}(id -u "${'$'}user")
+          sudo -u "${'$'}user" DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/${'$'}userId/bus" gsettings set org.mate.background picture-filename "/home/${'$'}user/Pictures/mate-wp/${command.wallpaperPath.fileName}"
+          sudo -u "${'$'}user" DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/${'$'}userId/bus" gsettings set org.mate.background picture-options 'stretched'
+        done
+      else
+        PID=${'$'}(pgrep mate-panel)
+        export DBUS_SESSION_BUS_ADDRESS=${'$'}(grep -z DBUS_SESSION_BUS_ADDRESS /proc/${'$'}PID/environ | cut -d= -f2-)
       
         gsettings set org.mate.background picture-filename '${command.wallpaperPath.toAbsolutePath()}'
         gsettings set org.mate.background picture-options 'stretched'
