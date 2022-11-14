@@ -19,22 +19,21 @@ data class WallpaperMetadata(
   @Serializable(BingLocalDateSerializer::class)
   val endDate: LocalDate,
   @SerialName("url")
-  private val _url: String,
+  private val urlPath: String,
   @SerialName("urlbase")
   private val urlBase: String,
   val copyright: String,
   @SerialName("copyrightlink")
   val copyrightLink: String,
   val title: String,
-  @SerialName("quiz")
-  private val _quiz: String,
+  private val quiz: String,
 ) {
 
   companion object {
     private const val BING_HOST = "https://www.bing.com"
   }
 
-  val url by lazy { BING_HOST + _url }
-  val quizUrl by lazy { BING_HOST + _quiz }
+  val url by lazy { BING_HOST + urlPath }
+  val quizUrl by lazy { BING_HOST + quiz }
 
 }

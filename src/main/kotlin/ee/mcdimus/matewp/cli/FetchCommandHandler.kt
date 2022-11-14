@@ -5,8 +5,7 @@ import ee.mcdimus.matewp.usecase.FetchWallpaperMetadata.FetchWallpaperMetadataCo
 import ee.mcdimus.matewp.usecase.FetchWallpaperMetadata.FetchWallpaperMetadataResult.Failure
 import ee.mcdimus.matewp.usecase.FetchWallpaperMetadata.FetchWallpaperMetadataResult.Success
 
-class FetchCommandHandler (
-  private val cliCommand: CLICommand,
+class FetchCommandHandler(
   private val fetchWallpaperMetadata: FetchWallpaperMetadata
 ) : CommandHandler {
 
@@ -18,7 +17,7 @@ class FetchCommandHandler (
     when (val res = fetchWallpaperMetadata.execute(FetchWallpaperMetadataCommand)) {
       is Success -> {
         println("Photo of the day (${res.wallpaperMetadata.startDate})")
-        println("=".repeat(20))
+        println("==========================================")
         with(res.wallpaperMetadata) {
           println("\t$title")
           println("\t$copyright")

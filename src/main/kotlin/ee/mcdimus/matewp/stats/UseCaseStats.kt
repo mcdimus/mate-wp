@@ -1,6 +1,5 @@
 package ee.mcdimus.matewp.stats
 
-import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 
 data class UseCaseStats(

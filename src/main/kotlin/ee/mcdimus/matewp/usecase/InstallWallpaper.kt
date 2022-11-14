@@ -25,8 +25,10 @@ class InstallWallpaper : UseCase<InstallWallpaper.InstallWallpaperCommand, Insta
           cp '${command.wallpaperPath.toAbsolutePath()}' "/home/${'$'}user/Pictures/mate-wp"
           chown ${'$'}user:${'$'}user "/home/${'$'}user/Pictures/mate-wp/${command.wallpaperPath.fileName}"
           userId=${'$'}(id -u "${'$'}user")
-          sudo -u "${'$'}user" DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/${'$'}userId/bus" gsettings set org.mate.background picture-filename "/home/${'$'}user/Pictures/mate-wp/${command.wallpaperPath.fileName}"
-          sudo -u "${'$'}user" DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/${'$'}userId/bus" gsettings set org.mate.background picture-options 'stretched'
+          sudo -u "${'$'}user" DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/${'$'}userId/bus" \
+            gsettings set org.mate.background picture-filename "/home/${'$'}user/Pictures/mate-wp/${command.wallpaperPath.fileName}"
+          sudo -u "${'$'}user" DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/${'$'}userId/bus" \
+            gsettings set org.mate.background picture-options 'stretched'
         done
       else
         PID=${'$'}(pgrep mate-panel)
@@ -55,11 +57,10 @@ class InstallWallpaper : UseCase<InstallWallpaper.InstallWallpaperCommand, Insta
     return value
   }
 
-  data class InstallWallpaperCommand(val wallpaperPath: Path) {
-
-  }
+  data class InstallWallpaperCommand(val wallpaperPath: Path)
 
   sealed class InstallWallpaperResult {
     data object Success : InstallWallpaperResult()
   }
+
 }

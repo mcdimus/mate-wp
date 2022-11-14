@@ -11,7 +11,6 @@ import ee.mcdimus.matewp.usecase.InstallWallpaper.InstallWallpaperCommand
 import kotlin.system.measureTimeMillis
 
 class UpdateCommandHandler(
-  private val cliCommand: CLICommand,
   private val fetchWallpaperMetadata: FetchWallpaperMetadata,
   private val downloadWallpaper: DownloadWallpaper,
   private val installWallpaper: InstallWallpaper

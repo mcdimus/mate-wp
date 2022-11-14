@@ -11,9 +11,8 @@ interface CommandHandler {
   companion object {
     fun of(cliCommand: CLICommand, di: DI): CommandHandler {
       return when (cliCommand.id.uppercase()) {
-        FetchCommandHandler.KEY -> FetchCommandHandler(cliCommand, di.direct.instance())
+        FetchCommandHandler.KEY -> FetchCommandHandler(di.direct.instance())
         UpdateCommandHandler.KEY -> UpdateCommandHandler(
-          cliCommand = cliCommand,
           fetchWallpaperMetadata = di.direct.instance(),
           downloadWallpaper = di.direct.instance(),
           installWallpaper = di.direct.instance()

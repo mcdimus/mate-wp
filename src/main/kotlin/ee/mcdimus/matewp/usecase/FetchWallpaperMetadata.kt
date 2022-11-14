@@ -27,6 +27,7 @@ class FetchWallpaperMetadata(
     private val LOG = LoggerFactory.getLogger(this::class.java.enclosingClass)
 
     private const val BING_PHOTO_OF_THE_DAY_URL = "https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US"
+    private const val OK = 200
   }
 
   private val json = Json { ignoreUnknownKeys = true; prettyPrint = true }
@@ -40,7 +41,7 @@ class FetchWallpaperMetadata(
       .build()
 
     return runCatching { httpClient.send(request, HttpResponse.BodyHandlers.ofString()) }
-      .mapCatching { if (it.statusCode() == 200) it.body() else error("status ${it.statusCode()}") }
+      .mapCatching { if (it.statusCode() == OK) it.body() else error("status ${it.statusCode()}") }
       .mapCatching { json.parseToJsonElement(it) }
       .mapCatching { it.jsonObject["images"]?.jsonArray?.get(0) ?: throw IllegalArgumentException("unexpected JSON structure:\n${json.encodeToString(it)}") }
       .mapCatching { json.decodeFromJsonElement<WallpaperMetadata>(it) }

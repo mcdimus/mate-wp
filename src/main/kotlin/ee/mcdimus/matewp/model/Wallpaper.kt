@@ -17,5 +17,4 @@ data class Wallpaper(
   override val copyrightLink: String,
   override val title: String,
   override val quiz: String
-): PhotoOfTheDay() {
-}
+) : PhotoOfTheDay

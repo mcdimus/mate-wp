@@ -89,12 +89,12 @@ class FetchWallpaperMetadataTest : BehaviorSpec({
               startDate = LocalDate(2022, Month.APRIL, 22),
               fullStartDate = LocalDateTime(2022, Month.APRIL, 22, 7, 0),
               endDate = LocalDate(2022, Month.APRIL, 23),
-              _url = "/th?id=OHR.EarthDay2022_EN-US1806321261_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp",
+              urlPath = "/th?id=OHR.EarthDay2022_EN-US1806321261_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp",
               urlBase = "/th?id=OHR.EarthDay2022_EN-US1806321261",
               copyright = "Small lake in Karula National Park, Valgamaa County, Estonia (© Sven Zacek/Minden Pictures)",
               copyrightLink = "https://www.bing.com/search?q=earth+day&form=hpcapt&filters=HpDate%3a%2220220422_0700%22",
               title = "Eye of the world",
-              _quiz = "/search?q=Bing+homepage+quiz&filters=WQOskey:%22HPQuiz_20220422_EarthDay2022%22&FORM=HPQUIZ",
+              quiz = "/search?q=Bing+homepage+quiz&filters=WQOskey:%22HPQuiz_20220422_EarthDay2022%22&FORM=HPQUIZ",
             ),
         )
       }
