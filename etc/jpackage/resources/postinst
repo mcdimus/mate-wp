@@ -21,7 +21,7 @@ case "$1" in
     configure)
         xdg-desktop-menu install /opt/mate-wp/lib/mate-wp-mate-wp.desktop
         ln -sf /opt/mate-wp/bin/mate-wp /usr/bin/mate-wp
-        ln -sf /opt/mate-wp/lib/app/mate-wp-update.sh /etc/cron.daily/mate-wp-update.sh
+        ln -sf /opt/mate-wp/lib/app/mate-wp-update.sh /etc/cron.daily/mate-wp-update
     ;;
     abort-upgrade|abort-remove|abort-deconfigure)
         # do nothing
