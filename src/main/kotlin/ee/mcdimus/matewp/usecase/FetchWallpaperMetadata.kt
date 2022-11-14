@@ -24,7 +24,7 @@ class FetchWallpaperMetadata(
 
   companion object {
     @JvmStatic
-    private val LOG = LoggerFactory.getLogger(FetchWallpaperMetadata::class.java)
+    private val LOG = LoggerFactory.getLogger(this::class.java.enclosingClass)
 
     private const val BING_PHOTO_OF_THE_DAY_URL = "https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US"
   }
@@ -32,7 +32,7 @@ class FetchWallpaperMetadata(
   private val json = Json { ignoreUnknownKeys = true; prettyPrint = true }
 
   override fun execute(command: FetchWallpaperMetadataCommand): FetchWallpaperMetadataResult {
-    LOG.debug("HELLO")
+    LOG.info("FetchWallpaperMetadata")
     val request: HttpRequest = HttpRequest.newBuilder()
       .uri(URI(BING_PHOTO_OF_THE_DAY_URL))
       .timeout(Duration.of(1, ChronoUnit.SECONDS))
@@ -47,7 +47,7 @@ class FetchWallpaperMetadata(
       .fold(
         onSuccess = { Success(wallpaperMetadata = it) },
         onFailure = { Failure(message = "failed to fetch: ${it.message}") }
-      )
+      ).also { LOG.info(it.toString()) }
   }
 
   object FetchWallpaperMetadataCommand

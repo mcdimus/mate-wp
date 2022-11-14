@@ -4,7 +4,6 @@ import ee.mcdimus.matewp.model.WallpaperMetadata
 import ee.mcdimus.matewp.usecase.DownloadWallpaper.DownloadWallpaperCommand
 import ee.mcdimus.matewp.usecase.DownloadWallpaper.DownloadWallpaperResult
 import org.slf4j.LoggerFactory
-import org.slf4j.MarkerFactory
 import java.awt.Color
 import java.awt.Font
 import java.awt.image.BufferedImage
@@ -19,13 +18,13 @@ import javax.imageio.ImageIO
 class DownloadWallpaper : UseCase<DownloadWallpaperCommand, DownloadWallpaperResult> {
 
   companion object {
-    private val LOG = LoggerFactory.getLogger(DownloadWallpaper::class.java)
+    @JvmStatic
+    private val LOG = LoggerFactory.getLogger(this::class.java.enclosingClass)
 
     private const val USER_HOME = "user.home"
   }
 
   private val homeDirectory by lazy {
-    LOG.atDebug().addMarker(MarkerFactory.getMarker("").)
     val homeDirectoryPath = System.getProperty(USER_HOME)
       ?: throw IllegalStateException("system property $USER_HOME is not defined")
 
@@ -60,6 +59,7 @@ class DownloadWallpaper : UseCase<DownloadWallpaperCommand, DownloadWallpaperRes
       val bufferedImage = ImageIO.read(url).addText(command.wallpaperMetadata.title, command.wallpaperMetadata.copyright)
       val wallpaperPath = picturesDirectory.resolve(command.wallpaperMetadata.startDate.toString() + ".jpg")
       val metadataPath = metadataDirectory.resolve(command.wallpaperMetadata.startDate.toString() + ".properties")
+
       saveProperties(
         metadataPath, linkedMapOf(
           "startDate" to command.wallpaperMetadata.startDate.toString(),
@@ -70,12 +70,12 @@ class DownloadWallpaper : UseCase<DownloadWallpaperCommand, DownloadWallpaperRes
 
       val isWritten = ImageIO.write(bufferedImage, "jpg", wallpaperPath.toFile())
       if (isWritten) {
-        DownloadWallpaperResult.Success(wallpaperPath = wallpaperPath, metadataPath = metadataPath)
+        DownloadWallpaperResult.Success(wallpaperPath = wallpaperPath, metadataPath = metadataPath).also { LOG.info(it.toString()) }
       } else {
-        DownloadWallpaperResult.Failure
+        DownloadWallpaperResult.Failure.also { LOG.info(it.toString()) }
       }
     } catch (e: IOException) {
-      LOG.error("download failed: {}\n {}", e.message, e)
+      LOG.error("download failed: {}", e.message, e)
       DownloadWallpaperResult.Failure
     }
   }
@@ -134,7 +134,7 @@ class DownloadWallpaper : UseCase<DownloadWallpaperCommand, DownloadWallpaperRes
 
   sealed class DownloadWallpaperResult {
     data class Success(val wallpaperPath: Path, val metadataPath: Path) : DownloadWallpaperResult()
-    object Failure : DownloadWallpaperResult()
+    data object Failure : DownloadWallpaperResult()
   }
 
 }

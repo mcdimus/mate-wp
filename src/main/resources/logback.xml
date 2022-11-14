@@ -7,7 +7,7 @@
   </appender>
 
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    <file>tests.log</file>
+    <file>${user.home}/.mate-wp/mate-wp.log</file>
     <append>true</append>
     <encoder>
       <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
