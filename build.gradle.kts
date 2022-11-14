@@ -2,6 +2,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jreleaser.gradle.plugin.tasks.JReleaserAssembleTask
 import org.jreleaser.model.Active.ALWAYS
 
@@ -31,6 +32,10 @@ java {
   toolchain {
     languageVersion.set(JavaLanguageVersion.of(17))
   }
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+  kotlinOptions.languageVersion = "1.8"
 }
 
 dependencies {
