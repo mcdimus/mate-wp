@@ -6,6 +6,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jreleaser.gradle.plugin.tasks.JReleaserAssembleTask
 import org.jreleaser.model.Active.ALWAYS
 
+@Suppress("DSL_SCOPE_VIOLATION") // suppressed until https://github.com/gradle/gradle/issues/22797 is fixed
 plugins {
   application
   alias(libs.plugins.kotlin.jvm)
@@ -14,7 +15,7 @@ plugins {
   alias(libs.plugins.kover)
   alias(libs.plugins.versions)
   alias(libs.plugins.versions.catalogUpdate)
-  id("org.jreleaser") version "1.1.0"
+  alias(libs.plugins.jreleaser)
 }
 
 group = "eu.maksimov"
@@ -45,11 +46,11 @@ dependencies {
   implementation(libs.kotlinx.serialization.json)
   implementation(libs.kotlinx.serialization.properties)
   implementation(libs.kotlinx.datetime)
-  implementation("ch.qos.logback:logback-classic:1.4.1")
-  implementation("org.fusesource.jansi:jansi:1.18")
+  implementation(libs.logback)
 
   testImplementation(libs.bundles.kotest)
   testImplementation(libs.mockk)
+  testImplementation(libs.assertj)
   testImplementation(libs.junit5.api)
   testRuntimeOnly(libs.junit5.engine)
 }
@@ -189,6 +190,6 @@ jreleaser {
 }
 
 tasks.wrapper {
-  gradleVersion = "7.5"
+  gradleVersion = "7.6"
   distributionType = Wrapper.DistributionType.ALL
 }
