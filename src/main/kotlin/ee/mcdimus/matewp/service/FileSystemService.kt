@@ -17,7 +17,7 @@ class FileSystemService {
 
   fun getHomeDirectory(): Path {
     val homeDirectoryPath = System.getProperty(USER_HOME)
-            ?: throw IllegalStateException("system property $USER_HOME is not defined")
+      ?: error("system property $USER_HOME is not defined")
 
     return Paths.get(homeDirectoryPath)
   }

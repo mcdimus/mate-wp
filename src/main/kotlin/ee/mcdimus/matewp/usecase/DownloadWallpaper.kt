@@ -12,7 +12,7 @@ import java.net.URL
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.util.Properties
+import java.util.*
 import javax.imageio.ImageIO
 
 class DownloadWallpaper : UseCase<DownloadWallpaperCommand, DownloadWallpaperResult> {
@@ -26,7 +26,7 @@ class DownloadWallpaper : UseCase<DownloadWallpaperCommand, DownloadWallpaperRes
 
   private val homeDirectory by lazy {
     val homeDirectoryPath = System.getProperty(USER_HOME)
-      ?: throw IllegalStateException("system property $USER_HOME is not defined")
+      ?: error("system property $USER_HOME is not defined")
 
     LOG.debug("resolved home directory: {}", homeDirectoryPath)
 

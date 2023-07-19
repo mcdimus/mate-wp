@@ -1,13 +1,13 @@
 [versions]
-kotlin = "1.8.20"
+kotlin = "1.9.0"
 junit5 = "5.9.2"
-kotest = "5.6.0"
-resilience4j = "2.0.2"
+kotest = "5.6.2"
+resilience4j = "2.1.0"
 
 [libraries]
-kodein = "org.kodein.di:kodein-di:7.20.1"
-kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0"
-kotlinx-serialization-properties = "org.jetbrains.kotlinx:kotlinx-serialization-properties:1.5.0"
+kodein = "org.kodein.di:kodein-di:7.20.2"
+kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1"
+kotlinx-serialization-properties = "org.jetbrains.kotlinx:kotlinx-serialization-properties:1.5.1"
 kotlinx-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
 junit5-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit5" }
 junit5-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit5" }
@@ -16,7 +16,7 @@ kotest-framework = { module = "io.kotest:kotest-runner-junit5", version.ref = "k
 kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest" }
 mockk = "io.mockk:mockk:1.13.5"
 assertj = "org.assertj:assertj-core:3.24.2"
-logback = "ch.qos.logback:logback-classic:1.4.6"
+logback = "ch.qos.logback:logback-classic:1.4.8"
 resilience-kotlin = { module = "io.github.resilience4j:resilience4j-kotlin", version.ref = "resilience4j" }
 resilience-retry = { module = "io.github.resilience4j:resilience4j-retry", version.ref = "resilience4j" }
 
@@ -30,10 +30,10 @@ kotest = [
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-detekt = "io.gitlab.arturbosch.detekt:1.22.0"
-kover = "org.jetbrains.kotlinx.kover:0.6.0"
-versions = "com.github.ben-manes.versions:0.46.0"
-versions-catalogUpdate = "nl.littlerobots.version-catalog-update:0.8.0"
+detekt = "io.gitlab.arturbosch.detekt:1.23.0"
+kover = "org.jetbrains.kotlinx.kover:0.7.2"
+versions = "com.github.ben-manes.versions:0.47.0"
+versions-catalogUpdate = "nl.littlerobots.version-catalog-update:0.8.1"
 # 1.5.1 introduced a bug with incorrect path resolvement for jdeps --class-path param
 # see https://github.com/jreleaser/jreleaser/commit/9873cf19689022a8860c251e3fa12634aa4ca254#diff-7683ee0f1a3610edb650d2b2b80bfccedd44e422638040b44dd6c326e378d8bc
 # see https://github.com/jreleaser/jreleaser/blob/9873cf19689022a8860c251e3fa12634aa4ca254/core/jreleaser-engine/src/main/java/org/jreleaser/assemblers/JlinkAssemblerProcessor.java#L297

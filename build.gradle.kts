@@ -71,7 +71,7 @@ tasks.withType<Test>().configureEach {
 }
 
 detekt {
-  config = files("etc/detekt.yml")
+  config.from(files("etc/detekt.yml"))
 }
 
 tasks.withType<JReleaserAssembleTask> {
