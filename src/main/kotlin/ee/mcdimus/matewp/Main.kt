@@ -5,12 +5,17 @@ import ee.mcdimus.matewp.cli.CommandHandler
 import ee.mcdimus.matewp.usecase.DownloadWallpaper
 import ee.mcdimus.matewp.usecase.FetchWallpaperMetadata
 import ee.mcdimus.matewp.usecase.InstallWallpaper
+import io.github.resilience4j.core.IntervalFunction
+import io.github.resilience4j.retry.RetryConfig
+import io.github.resilience4j.retry.RetryRegistry
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
 import org.slf4j.LoggerFactory
+import java.io.IOException
 import java.net.http.HttpClient
 import kotlin.system.measureTimeMillis
+
 
 private val LOG = LoggerFactory.getLogger("cli-main")
 
@@ -22,9 +27,19 @@ fun main(args: Array<String>) {
     } else {
       val di = DI {
         bindSingleton { HttpClient.newHttpClient() }
-        bindSingleton { FetchWallpaperMetadata(httpClient = instance()) }
+        bindSingleton { FetchWallpaperMetadata(httpClient = instance(), retryRegistry = instance()) }
         bindSingleton { DownloadWallpaper() }
         bindSingleton { InstallWallpaper() }
+        bindSingleton {
+          @Suppress("MagicNumber")
+          val config = RetryConfig.custom<Any>()
+            .maxAttempts(3)
+            .retryExceptions(IOException::class.java)
+            .intervalFunction(IntervalFunction.ofExponentialBackoff())
+            .build()
+
+          RetryRegistry.of(config)
+        }
       }
 
       val cliCommand = CLICommand(id = args[0], args = args.drop(1))

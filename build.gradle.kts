@@ -6,7 +6,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jreleaser.gradle.plugin.tasks.JReleaserAssembleTask
 import org.jreleaser.model.Active.ALWAYS
 
-@Suppress("DSL_SCOPE_VIOLATION") // suppressed until https://github.com/gradle/gradle/issues/22797 is fixed
 plugins {
   application
   alias(libs.plugins.kotlin.jvm)
@@ -36,7 +35,7 @@ java {
 }
 
 tasks.withType<KotlinCompile>().configureEach {
-  kotlinOptions.languageVersion = "1.8"
+  kotlinOptions.languageVersion = "1.9"
 }
 
 dependencies {
@@ -47,6 +46,12 @@ dependencies {
   implementation(libs.kotlinx.serialization.properties)
   implementation(libs.kotlinx.datetime)
   implementation(libs.logback)
+  implementation(libs.resilience.kotlin)
+  implementation(libs.resilience.retry)
+
+  // for jlink
+  implementation("com.google.code.findbugs:jsr305:3.0.2")
+  implementation("io.github.resilience4j:resilience4j-all:2.0.2")
 
   testImplementation(libs.bundles.kotest)
   testImplementation(libs.mockk)
@@ -78,11 +83,13 @@ tasks.withType<JReleaserAssembleTask> {
 jreleaser {
   project {
     vendor.set("Dmitri Maksimov")
-    website.set("https://github.com/mcdimus/mate-wp")
     authors.set(listOf("Dmitri Maksimov"))
     description.set("Photo Of the Day from Bing")
     license.set("Apache-2.0")
-    extraProperties.put("inceptionYear", "2014")
+    inceptionYear.set("2014")
+    links {
+      homepage.set("https://github.com/mcdimus/mate-wp")
+    }
     java {
 
     }
@@ -92,7 +99,7 @@ jreleaser {
       create("app-jlink") {
         active.set(ALWAYS)
         exported.set(false)
-        executable.set("mate-wp")        // Name of the executable launcher. If left undefined, will use ${assembler.name}.
+        executable.set("mate-wp") // Name of the executable launcher. If left undefined, will use ${assembler.name}.
 
         val compiler = javaToolchains.compilerFor {
           languageVersion.set(JavaLanguageVersion.of(17))
@@ -117,6 +124,8 @@ jreleaser {
           // JARs or classes used to limit the module search. Must be defined as paths. Defaults to empty.
           targets.add(File(projectDir, "build/classes/kotlin/main/ee/mcdimus/matewp/MainKt.class").absolutePath)
         }
+        additionalModuleNames.add("jdk.crypto.ec") // required for SSL
+        additionalModuleNames.add("java.naming") // required for logback
 
         copyJars.set(true)        // Copy main and input JARs into archive. Defaults to `true`.
 
@@ -190,6 +199,6 @@ jreleaser {
 }
 
 tasks.wrapper {
-  gradleVersion = "7.6"
+  gradleVersion = "8.1"
   distributionType = Wrapper.DistributionType.ALL
 }

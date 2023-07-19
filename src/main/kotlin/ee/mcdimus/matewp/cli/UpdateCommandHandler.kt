@@ -8,6 +8,7 @@ import ee.mcdimus.matewp.usecase.FetchWallpaperMetadata.FetchWallpaperMetadataCo
 import ee.mcdimus.matewp.usecase.FetchWallpaperMetadata.FetchWallpaperMetadataResult
 import ee.mcdimus.matewp.usecase.InstallWallpaper
 import ee.mcdimus.matewp.usecase.InstallWallpaper.InstallWallpaperCommand
+import org.slf4j.LoggerFactory
 import kotlin.system.measureTimeMillis
 
 class UpdateCommandHandler(
@@ -17,6 +18,9 @@ class UpdateCommandHandler(
 ) : CommandHandler {
 
   companion object {
+    @JvmStatic
+    private val LOG = LoggerFactory.getLogger(this::class.java.enclosingClass)
+
     const val KEY = "UPDATE"
   }
 
@@ -26,13 +30,18 @@ class UpdateCommandHandler(
       println("=======================")
       println("* Fetch metadata...")
       when (val fetchWallpaperMetadataResult = fetchWallpaperMetadata.execute(FetchWallpaperMetadataCommand)) {
-        is FetchWallpaperMetadataResult.Failure -> println("ERROR: ${fetchWallpaperMetadataResult.message}")
+        is FetchWallpaperMetadataResult.Failure -> {
+          println("ERROR: ${fetchWallpaperMetadataResult.message}")
+          LOG.error(fetchWallpaperMetadataResult.message, fetchWallpaperMetadataResult.cause)
+        }
+
         is FetchWallpaperMetadataResult.Success -> {
           println(fetchWallpaperMetadataResult.toPrettyString())
 
           println()
           println("* Downloading...")
-          when (val downloadWallpaperResult = downloadWallpaper.execute(DownloadWallpaperCommand(fetchWallpaperMetadataResult.wallpaperMetadata))) {
+          when (val downloadWallpaperResult =
+            downloadWallpaper.execute(DownloadWallpaperCommand(fetchWallpaperMetadataResult.wallpaperMetadata))) {
             is DownloadWallpaperResult.Failure -> println("ERROR: ${downloadWallpaperResult}")
             is DownloadWallpaperResult.Success -> {
               println("[-] ${downloadWallpaperResult.wallpaperPath}")

@@ -32,7 +32,7 @@ class InstallWallpaper : UseCase<InstallWallpaper.InstallWallpaperCommand, Insta
         done
       else
         PID=${'$'}(pgrep mate-panel)
-        export DBUS_SESSION_BUS_ADDRESS=${'$'}(grep -z DBUS_SESSION_BUS_ADDRESS /proc/${'$'}PID/environ | cut -d= -f2-)
+        export DBUS_SESSION_BUS_ADDRESS=${'$'}(grep -z DBUS_SESSION_BUS_ADDRESS /proc/${'$'}PID/environ | cut -d= -f2- | tr -d '\0')
       
         gsettings set org.mate.background picture-filename '${command.wallpaperPath.toAbsolutePath()}'
         gsettings set org.mate.background picture-options 'stretched'

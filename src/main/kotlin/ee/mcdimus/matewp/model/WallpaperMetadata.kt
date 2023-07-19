@@ -20,8 +20,6 @@ data class WallpaperMetadata(
   val endDate: LocalDate,
   @SerialName("url")
   private val urlPath: String,
-  @SerialName("urlbase")
-  private val urlBase: String,
   val copyright: String,
   @SerialName("copyrightlink")
   val copyrightLink: String,

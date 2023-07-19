@@ -5,6 +5,8 @@ import ee.mcdimus.matewp.usecase.FetchWallpaperMetadata.FetchWallpaperMetadataCo
 import ee.mcdimus.matewp.usecase.FetchWallpaperMetadata.FetchWallpaperMetadataResult
 import ee.mcdimus.matewp.usecase.FetchWallpaperMetadata.FetchWallpaperMetadataResult.Failure
 import ee.mcdimus.matewp.usecase.FetchWallpaperMetadata.FetchWallpaperMetadataResult.Success
+import io.github.resilience4j.kotlin.retry.executeFunction
+import io.github.resilience4j.retry.RetryRegistry
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
@@ -19,7 +21,8 @@ import java.time.Duration
 import java.time.temporal.ChronoUnit
 
 class FetchWallpaperMetadata(
-  private val httpClient: HttpClient
+  private val httpClient: HttpClient,
+  private val retryRegistry: RetryRegistry
 ) : UseCase<FetchWallpaperMetadataCommand, FetchWallpaperMetadataResult> {
 
   companion object {
@@ -40,14 +43,20 @@ class FetchWallpaperMetadata(
       .GET()
       .build()
 
-    return runCatching { httpClient.send(request, HttpResponse.BodyHandlers.ofString()) }
+    return runCatching {
+      retryRegistry.retry("try-FetchWallpaperMetadata")
+        .executeFunction { httpClient.send(request, HttpResponse.BodyHandlers.ofString()) }
+    }
       .mapCatching { if (it.statusCode() == OK) it.body() else error("status ${it.statusCode()}") }
       .mapCatching { json.parseToJsonElement(it) }
-      .mapCatching { it.jsonObject["images"]?.jsonArray?.get(0) ?: throw IllegalArgumentException("unexpected JSON structure:\n${json.encodeToString(it)}") }
+      .mapCatching {
+        it.jsonObject["images"]?.jsonArray?.get(0)
+          ?: throw IllegalArgumentException("unexpected JSON structure:\n${json.encodeToString(it)}")
+      }
       .mapCatching { json.decodeFromJsonElement<WallpaperMetadata>(it) }
       .fold(
         onSuccess = { Success(wallpaperMetadata = it) },
-        onFailure = { Failure(message = "failed to fetch: ${it.message}") }
+        onFailure = { Failure(message = "failed to fetch: ${it.message}", cause = it) }
       ).also { LOG.info(it.toString()) }
   }
 
@@ -63,7 +72,32 @@ class FetchWallpaperMetadata(
       """.trimIndent()
     }
 
-    data class Failure(val message: String) : FetchWallpaperMetadataResult()
+    data class Failure(val message: String, val cause: Throwable) : FetchWallpaperMetadataResult() {
+      override fun toString(): String {
+        return "$message (${cause.javaClass.simpleName}:${cause.message})"
+      }
+
+      override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Failure
+
+        if (message != other.message) return false
+        if (cause::class != other.cause::class
+          && cause.message != other.cause.message
+        ) return false
+
+        return true
+      }
+
+      override fun hashCode(): Int {
+        var result = message.hashCode()
+        result = 31 * result + cause.message.hashCode()
+        result = 31 * result + cause::class.hashCode()
+        return result
+      }
+    }
   }
 
 }
