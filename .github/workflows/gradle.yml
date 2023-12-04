@@ -47,6 +47,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     if: ${{ github.ref == 'refs/heads/master' }}
     steps:
+      - uses: actions/checkout@v3
       - name: Download a single artifact
         uses: actions/download-artifact@v3
         with:
