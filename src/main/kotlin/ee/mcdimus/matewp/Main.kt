@@ -1,18 +1,52 @@
 package ee.mcdimus.matewp
 
-import ee.mcdimus.matewp.command.CommandFactory
+import ee.mcdimus.matewp.cli.CLICommand
+import ee.mcdimus.matewp.cli.CommandHandler
+import ee.mcdimus.matewp.usecase.DownloadWallpaper
+import ee.mcdimus.matewp.usecase.FetchWallpaperMetadata
+import ee.mcdimus.matewp.usecase.InstallWallpaper
+import io.github.resilience4j.core.IntervalFunction
+import io.github.resilience4j.retry.RetryConfig
+import io.github.resilience4j.retry.RetryRegistry
+import org.kodein.di.DI
+import org.kodein.di.bindSingleton
+import org.kodein.di.instance
+import org.slf4j.LoggerFactory
+import java.io.IOException
+import java.net.http.HttpClient
+import kotlin.system.measureTimeMillis
+
+
+private val LOG = LoggerFactory.getLogger("cli-main")
 
 fun main(args: Array<String>) {
-  if (args.isEmpty()) {
-    printUsage()
-    return
-  }
+  val elapsedMillis = measureTimeMillis {
+    LOG.info("CLI execution start. Arguments: {}.", args)
+    if (args.isEmpty()) {
+      printUsage()
+    } else {
+      val di = DI {
+        bindSingleton { HttpClient.newHttpClient() }
+        bindSingleton { FetchWallpaperMetadata(httpClient = instance(), retryRegistry = instance()) }
+        bindSingleton { DownloadWallpaper() }
+        bindSingleton { InstallWallpaper() }
+        bindSingleton {
+          @Suppress("MagicNumber")
+          val config = RetryConfig.custom<Any>()
+            .maxAttempts(3)
+            .retryExceptions(IOException::class.java)
+            .intervalFunction(IntervalFunction.ofExponentialBackoff())
+            .build()
 
-  val command = CommandFactory.get(
-    commandId = args[0],
-    commandArgs = args.drop(1).toTypedArray()
-  )
-  command.execute()
+          RetryRegistry.of(config)
+        }
+      }
+
+      val cliCommand = CLICommand(id = args[0], args = args.drop(1))
+      CommandHandler.of(cliCommand, di).handle()
+    }
+  }
+  LOG.info("CLI execution end. Time elapsed: {} ms.", elapsedMillis)
 }
 
 private fun printUsage() {
