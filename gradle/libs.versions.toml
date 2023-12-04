@@ -31,7 +31,7 @@ kotest = [
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 detekt = "io.gitlab.arturbosch.detekt:1.23.0"
-kover = "org.jetbrains.kotlinx.kover:0.7.2"
+kover = "org.jetbrains.kotlinx.kover:0.7.5"
 versions = "com.github.ben-manes.versions:0.47.0"
 versions-catalogUpdate = "nl.littlerobots.version-catalog-update:0.8.1"
 # 1.5.1 introduced a bug with incorrect path resolvement for jdeps --class-path param
