@@ -76,6 +76,14 @@ detekt {
   config.from(files("etc/detekt.yml"))
 }
 
+koverReport {
+  defaults {
+    log {
+      onCheck = true
+    }
+  }
+}
+
 tasks.withType<JReleaserAssembleTask> {
   dependsOn("build")
 }
