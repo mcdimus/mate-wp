@@ -1,5 +1,7 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-import org.gradle.api.tasks.testing.logging.TestLogEvent.*
+import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
+import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
+import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jreleaser.gradle.plugin.tasks.JReleaserAssembleTask
 import org.jreleaser.model.Active.ALWAYS
@@ -202,6 +204,6 @@ jreleaser {
 }
 
 tasks.wrapper {
-  gradleVersion = "8.2.1"
+  gradleVersion = "8.5"
   distributionType = Wrapper.DistributionType.ALL
 }
