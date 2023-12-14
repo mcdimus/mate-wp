@@ -36,7 +36,7 @@ jobs:
         arguments: build koverHtmlReport
     - name: Archive reports
       if: ${{ github.ref == 'refs/heads/master' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: reports
         path: build/reports
