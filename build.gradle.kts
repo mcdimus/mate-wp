@@ -51,7 +51,7 @@ dependencies {
 
   // for jlink
   implementation("com.google.code.findbugs:jsr305:3.0.2")
-  implementation("io.github.resilience4j:resilience4j-all:2.1.0")
+  implementation("io.github.resilience4j:resilience4j-all:2.2.0")
 
   testImplementation(libs.bundles.kotest)
   testImplementation(libs.mockk)
