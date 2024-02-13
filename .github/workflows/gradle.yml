@@ -30,10 +30,10 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
-    - name: Build with Gradle
+    - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
-      with:
-        arguments: build koverHtmlReport
+    - name: Execute Gradle build
+      run: ./gradlew build koverHtmlReport
     - name: Archive reports
       if: ${{ github.ref == 'refs/heads/master' }}
       uses: actions/upload-artifact@v4
