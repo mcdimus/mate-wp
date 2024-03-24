@@ -3,6 +3,8 @@ kotlin = "1.9.22"
 junit5 = "5.10.2"
 kotest = "5.9.0"
 resilience4j = "2.2.0"
+detekt = "1.23.6"
+kover = "0.7.5"
 
 [libraries]
 kodein = "org.kodein.di:kodein-di:7.21.2"
@@ -17,8 +19,10 @@ kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest"
 mockk = "io.mockk:mockk:1.13.11"
 assertj = "org.assertj:assertj-core:3.26.0"
 logback = "ch.qos.logback:logback-classic:1.5.6"
+slf4j-api = "org.slf4j:slf4j-api:2.0.12"
 resilience-kotlin = { module = "io.github.resilience4j:resilience4j-kotlin", version.ref = "resilience4j" }
 resilience-retry = { module = "io.github.resilience4j:resilience4j-retry", version.ref = "resilience4j" }
+clikt = "com.github.ajalt.clikt:clikt:4.2.2"
 
 [bundles]
 kotest = [
