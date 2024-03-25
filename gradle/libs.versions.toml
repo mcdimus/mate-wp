@@ -30,7 +30,7 @@ kotest = [
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-detekt = "io.gitlab.arturbosch.detekt:1.23.5"
+detekt = "io.gitlab.arturbosch.detekt:1.23.6"
 kover = "org.jetbrains.kotlinx.kover:0.7.5"
 versions = "com.github.ben-manes.versions:0.51.0"
 versions-catalogUpdate = "nl.littlerobots.version-catalog-update:0.8.4"
