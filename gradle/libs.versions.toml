@@ -14,7 +14,7 @@ junit5-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref
 kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotest-framework = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest" }
-mockk = "io.mockk:mockk:1.13.9"
+mockk = "io.mockk:mockk:1.13.11"
 assertj = "org.assertj:assertj-core:3.25.3"
 logback = "ch.qos.logback:logback-classic:1.4.14"
 resilience-kotlin = { module = "io.github.resilience4j:resilience4j-kotlin", version.ref = "resilience4j" }
