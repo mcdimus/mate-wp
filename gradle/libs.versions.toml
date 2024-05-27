@@ -1,5 +1,5 @@
 [versions]
-kotlin = "1.9.22"
+kotlin = "1.9.24"
 junit5 = "5.10.2"
 kotest = "5.9.0"
 resilience4j = "2.2.0"
