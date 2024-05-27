@@ -2,7 +2,8 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
   id("org.jetbrains.kotlin.jvm")
@@ -17,8 +18,8 @@ kotlin {
   jvmToolchain(17)
 }
 
-tasks.withType<KotlinCompile>().configureEach {
-  kotlinOptions.languageVersion = "1.9"
+tasks.withType<KotlinJvmCompile>().configureEach {
+  compilerOptions.languageVersion = KotlinVersion.KOTLIN_2_0
 }
 
 repositories {
