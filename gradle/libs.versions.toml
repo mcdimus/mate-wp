@@ -1,6 +1,6 @@
 [versions]
 kotlin = "2.0.0"
-junit5 = "5.10.2"
+junit5 = "5.11.0"
 kotest = "5.9.0"
 resilience4j = "2.2.0"
 detekt = "1.23.6"
