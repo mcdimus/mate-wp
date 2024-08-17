@@ -10,5 +10,4 @@ dependencies {
   implementation(libs.kotlinx.datetime)
   implementation(libs.resilience.kotlin)
   implementation(libs.slf4j.api)
-
 }
