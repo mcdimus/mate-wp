@@ -56,6 +56,8 @@ jobs:
           name: reports
       - name: Copy reports to docs
         run: |
+          pwd
+          ls -la
           mkdir -p ./docs/reports
           cp -r ./build/reports/{detekt,kover,tests} ./docs/reports
       - name: Setup Pages
