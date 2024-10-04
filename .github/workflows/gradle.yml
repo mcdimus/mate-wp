@@ -33,7 +33,7 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
     - name: Execute Gradle build
-      run: ./gradlew build koverHtmlReport
+      run: ./gradlew build koverHtmlReport --continue
     - name: Archive reports
       if: ${{ github.ref == 'refs/heads/master' }}
       uses: actions/upload-artifact@v4
@@ -57,7 +57,7 @@ jobs:
       - name: Copy reports to docs
         run: |
           mkdir -p ./docs/reports
-          cp -r {detekt,kover,tests} ./docs/reports
+          cp -r ./build/reports/{detekt,kover,tests} ./docs/reports
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact

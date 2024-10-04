@@ -8,6 +8,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 plugins {
   id("org.jetbrains.kotlin.jvm")
   id("org.jetbrains.kotlinx.kover")
+  `jvm-test-suite`
 }
 
 group = rootProject.group
@@ -45,10 +46,18 @@ koverReport {
   }
 }
 
-tasks.withType<Test>().configureEach {
-  useJUnitPlatform()
-  testLogging {
-    events(PASSED, SKIPPED, FAILED)
-    exceptionFormat = FULL
+testing {
+  suites {
+    val test by getting(JvmTestSuite::class) {
+      useJUnitJupiter()
+      targets.configureEach {
+        testTask {
+          testLogging {
+            events(PASSED, SKIPPED, FAILED)
+            exceptionFormat = FULL
+          }
+        }
+      }
+    }
   }
 }

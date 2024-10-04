@@ -6,7 +6,7 @@ plugins {
 }
 
 detekt {
-  config.from(files("etc/detekt.yml"))
+  config.from(files("$rootDir/etc/detekt.yml"))
   source.from(files(projectDir))
 }
 
