@@ -54,6 +54,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: reports
+          path: build/reports
       - name: Copy reports to docs
         run: |
           pwd
