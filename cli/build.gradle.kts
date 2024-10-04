@@ -2,7 +2,7 @@ import org.jreleaser.gradle.plugin.tasks.JReleaserAssembleTask
 import org.jreleaser.model.Active
 
 plugins {
-  id("kotlin-conventions")
+  id("kotlin-convention")
   application
   alias(libs.plugins.jreleaser)
 }

@@ -7,7 +7,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
   id("org.jetbrains.kotlin.jvm")
-  id("io.gitlab.arturbosch.detekt")
   id("org.jetbrains.kotlinx.kover")
 }
 
@@ -36,10 +35,6 @@ dependencies {
   testImplementation(libs.findLibrary("assertj").get())
   testImplementation(libs.findLibrary("junit5.api").get())
   testRuntimeOnly(libs.findLibrary("junit5.engine").get())
-}
-
-detekt {
-  config.from(files("../etc/detekt.yml"))
 }
 
 koverReport {

@@ -2,6 +2,7 @@ plugins {
   alias(libs.plugins.versions)
   alias(libs.plugins.versions.catalogUpdate)
   id("org.jetbrains.kotlinx.kover")
+  id("detekt-convention")
 }
 
 group = "eu.maksimov.matewp"
