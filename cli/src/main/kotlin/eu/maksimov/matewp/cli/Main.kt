@@ -1,6 +1,7 @@
 package eu.maksimov.matewp.cli
 
 import com.github.ajalt.clikt.core.CliktError
+import com.github.ajalt.clikt.core.parse
 import com.github.ajalt.clikt.core.subcommands
 import eu.maksimov.matewp.core.usecase.DownloadWallpaper
 import eu.maksimov.matewp.core.usecase.FetchWallpaperMetadata
