@@ -22,7 +22,7 @@ logback = "ch.qos.logback:logback-classic:1.5.12"
 slf4j-api = "org.slf4j:slf4j-api:2.0.16"
 resilience-kotlin = { module = "io.github.resilience4j:resilience4j-kotlin", version.ref = "resilience4j" }
 resilience-retry = { module = "io.github.resilience4j:resilience4j-retry", version.ref = "resilience4j" }
-clikt = "com.github.ajalt.clikt:clikt:5.0.1"
+clikt = "com.github.ajalt.clikt:clikt:5.0.2"
 
 [bundles]
 kotest = [
