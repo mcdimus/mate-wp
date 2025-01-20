@@ -7,7 +7,7 @@ detekt = "1.23.6"
 kover = "0.7.5"
 
 [libraries]
-kodein = "org.kodein.di:kodein-di:7.22.0"
+kodein = "org.kodein.di:kodein-di:7.25.0"
 kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3"
 kotlinx-serialization-properties = "org.jetbrains.kotlinx:kotlinx-serialization-properties:1.7.3"
 kotlinx-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.6.1"
