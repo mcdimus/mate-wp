@@ -37,7 +37,7 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 detekt = "io.gitlab.arturbosch.detekt:1.23.7"
 kover = "org.jetbrains.kotlinx.kover:0.8.3"
 versions = "com.github.ben-manes.versions:0.51.0"
-versions-catalogUpdate = "nl.littlerobots.version-catalog-update:0.8.4"
+versions-catalogUpdate = "nl.littlerobots.version-catalog-update:0.8.5"
 # 1.5.1 introduced a bug with incorrect path resolvement for jdeps --class-path param
 # see https://github.com/jreleaser/jreleaser/commit/9873cf19689022a8860c251e3fa12634aa4ca254#diff-7683ee0f1a3610edb650d2b2b80bfccedd44e422638040b44dd6c326e378d8bc
 # see https://github.com/jreleaser/jreleaser/blob/9873cf19689022a8860c251e3fa12634aa4ca254/core/jreleaser-engine/src/main/java/org/jreleaser/assemblers/JlinkAssemblerProcessor.java#L297
