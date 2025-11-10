@@ -18,7 +18,7 @@ kotest-framework = { module = "io.kotest:kotest-runner-junit5", version.ref = "k
 kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest" }
 mockk = "io.mockk:mockk:1.13.17"
 assertj = "org.assertj:assertj-core:3.27.3"
-logback = "ch.qos.logback:logback-classic:1.5.17"
+logback = "ch.qos.logback:logback-classic:1.5.21"
 slf4j-api = "org.slf4j:slf4j-api:2.0.16"
 resilience-kotlin = { module = "io.github.resilience4j:resilience4j-kotlin", version.ref = "resilience4j" }
 resilience-retry = { module = "io.github.resilience4j:resilience4j-retry", version.ref = "resilience4j" }
