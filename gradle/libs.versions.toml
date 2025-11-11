@@ -16,7 +16,7 @@ junit5-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref
 kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotest-framework = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest" }
-mockk = "io.mockk:mockk:1.13.17"
+mockk = "io.mockk:mockk:1.14.6"
 assertj = "org.assertj:assertj-core:3.27.6"
 logback = "ch.qos.logback:logback-classic:1.5.21"
 slf4j-api = "org.slf4j:slf4j-api:2.0.17"
