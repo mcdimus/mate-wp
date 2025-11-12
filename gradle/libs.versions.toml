@@ -8,7 +8,7 @@ kover = "0.7.5"
 
 [libraries]
 kodein = "org.kodein.di:kodein-di:7.25.0"
-kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0"
+kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0"
 kotlinx-serialization-properties = "org.jetbrains.kotlinx:kotlinx-serialization-properties:1.8.0"
 kotlinx-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.6.1"
 junit5-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit5" }
